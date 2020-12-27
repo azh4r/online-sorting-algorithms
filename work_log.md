@@ -1,0 +1,32 @@
+write program that will read the data
+
+The idea is to:
+1. Take in command line inputs
+    * location of file.
+    * X largest numbers to return. 
+    * (?) Number of records in each file (this will depend on size of memory of your docker instance)
+2. Read in a section of a remote file
+
+3. Sort and return X largest values
+    * So we do need to sort, but only X largest values. But this could very large? maybe even in millions or billions?
+    * In a file or standard out? answer: standard out.  
+    * If output is to be sent to standard out then it cannot be in billion? right?
+4. Dockerize the application
+    * execute a docker container 
+
+5. Output needs to be sent to standard out.
+
+6. Output does not need to be in any particular order
+
+Are 3 and 6 contradictory? 
+Or can we still Sort to get the largest numbers but then return X largest number IDs in unsorted list?
+
+Get size of file from amazon S3 to approximate size of file
+File could have millions or billions or septillion records
+Given the number of records that can be represented by a 20 digit hexadecimal key is 16^20 or 1.21x10^24
+1.21 Septillion records. 
+Each record can have a 32 bit numeric value.  
+
+reading the file skip first 499 bytes and start at 500
+
+output is a unique list of ids associated with the X largest values.
