@@ -18,6 +18,10 @@ The idea is to:
 
 6. Output does not need to be in any particular order
 
+7. Take into account extremely large files.
+
+8. Reducing data transfer.
+
 Are 3 and 6 contradictory? 
 Or can we still Sort to get the largest numbers but then return X largest number IDs in unsorted list?
 
@@ -28,5 +32,8 @@ Given the number of records that can be represented by a 20 digit hexadecimal ke
 Each record can have a 32 bit numeric value.  
 
 reading the file skip first 499 bytes and start at 500
+
+don't forget logging, except handling and testing
+
 
 output is a unique list of ids associated with the X largest values.
