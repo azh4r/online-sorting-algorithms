@@ -14,13 +14,6 @@ class DataFile:
         return in_file
 
     def read_file(file_handle, lines_to_read, offset):
-        #print("read file")
-        # assume if start of file then offset 500 bytes
-        # if file_handle.tell() == 0:
-        #     file_handle.seek(500)
-        #     file_dict = {}
-        #     return (file_dict, file_handle.tell(), False)
-
         end_of_file = False
         file_dict = {}
         count = 0
@@ -78,7 +71,7 @@ def main():
     # end of file is reached.
     end_of_file = False
     offset = 0
-    lines_to_read = 500
+    lines_to_read = 3000
     file_handle = DataFile.get_handle(file_location)
 
     # skip the first 500 bytes
@@ -93,7 +86,7 @@ def main():
     # do n sort file merge
     # get the top X numbers from the final file
     sort_merge_files()
-    
+
 
 if __name__ == '__main__':
     main()
