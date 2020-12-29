@@ -22,18 +22,21 @@ The idea is to:
 
 8. Reducing data transfer.
 
-Are 3 and 6 contradictory? 
+* Are 3 and 6 contradictory? 
 Or can we still Sort to get the largest numbers but then return X largest number IDs in unsorted list?
 
-Get size of file from amazon S3 to approximate size of file
+* Get size of file from amazon S3 to approximate size of file
 File could have millions or billions or septillion records
 Given the number of records that can be represented by a 20 digit hexadecimal key is 16^20 or 1.21x10^24
 1.21 Septillion records. 
 Each record can have a 32 bit numeric value.  
 
-reading the file skip first 499 bytes and start at 500
+* Special useless case: If we are looking for 100 largest values and in the first file we get 100 numbers with max 32 bit values then we can stop. 
 
-don't forget logging, except handling and testing
+* reading the file skip first 499 bytes and start at 500
 
+* don't forget logging, except handling and testing
 
-output is a unique list of ids associated with the X largest values.
+* output is a unique list of ids associated with the X largest values.
+
+* If all records are copied locally to N number of files, then there should be local storage large enough to handle all of data. 
