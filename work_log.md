@@ -40,3 +40,7 @@ Each record can have a 32 bit numeric value.
 * output is a unique list of ids associated with the X largest values.
 
 * If all records are copied locally to N number of files, then there should be local storage large enough to handle all of data. 
+
+* Python sorted() function uses Timsort algorithm which is a combination of mergesort and insertsort algorithms.  Go over these sorting algorithms for the interview.
+
+* 

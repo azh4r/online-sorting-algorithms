@@ -1,4 +1,5 @@
 import sys
+import glob, os
 
 # This module should read in the parameters
 # or ask for parameters to be entered.
@@ -42,7 +43,7 @@ def sort_file(file_dict):
 # this should also take in a file suffix like 'out', 1, 2, to append to file name written
 def write_file(sorted_dict,offset):
     print("write file")
-    with open('out_file_{}.txt'.format(str(offset)), 'w') as f:
+    with open('outfile_{}.txt'.format(str(offset)), 'w') as f:
         for key,value in sorted_dict.items():
             f.write("%s %s\n" % (key,value))
 
@@ -50,6 +51,17 @@ def write_file(sorted_dict,offset):
 # Function to sort merge n-files.  This could use a priority queue 
 def sort_merge_files():
     print("sort merge n-files")
+    # read all outfile_# into separate dict
+        # scan all files with 'outfile_' prefix
+    os.chdir("./")
+    for file in glob.glob("outfile_*.txt"):
+        
+        # read each of these files into a separate dict
+
+    # use heapq.merge(iterables, key, reverse = True)
+
+    # write the result
+
 
 
 
@@ -71,7 +83,7 @@ def main():
     # end of file is reached.
     end_of_file = False
     offset = 0
-    lines_to_read = 3000
+    lines_to_read = 500
     file_handle = DataFile.get_handle(file_location)
 
     # skip the first 500 bytes
