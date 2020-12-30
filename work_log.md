@@ -50,4 +50,5 @@ Each record can have a 32 bit numeric value.
 
 * Python sorted() function uses Timsort algorithm which is a combination of mergesort and insertsort algorithms.  Go over these sorting algorithms for the interview.
 
-* 
+* Added n-file mergesort but merging one file at a time.  But this is not optimal as the merged file grows and is written so storage requirement will be 
+large.  So with the same storage requirement doing a n-file sort merge will be faster. 
