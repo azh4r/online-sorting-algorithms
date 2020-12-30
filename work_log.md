@@ -10,7 +10,14 @@ The idea is to:
 3. Sort and return X largest values
     * So we do need to sort, but only X largest values. But this could very large? maybe even in millions or billions?
     * In a file or standard out? answer: standard out.  
-    * If output is to be sent to standard out then it cannot be in billion? right?
+    * If output is to be sent to standard out then it cannot be in billion?
+    * Initially I thought this was just a mergesort problem, but it seems it's more likely implementation through a priority queue. 
+    Because if the file is extremely large, would need to segment in smaller files and then merge all these files using a priority queue so we don't run out of memory. 
+    * Consideration could be memory (space complexity), time complexity and storage requirement. 
+    * If implementing on a single instance (not distributed), there could be two options:
+        1. Copy the remote file to the single instance in sorted segments.  This assume there is available storage locally for the data.
+        2. Storage on the instance is limited, so copy only part of the file sort merge the file locally and delete the segments which have been already sorted. 
+
 4. Dockerize the application
     * execute a docker container 
 

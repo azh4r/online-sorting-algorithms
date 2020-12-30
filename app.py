@@ -1,5 +1,6 @@
 import sys
 import glob, os
+import heapq
 
 # This module should read in the parameters
 # or ask for parameters to be entered.
@@ -41,9 +42,9 @@ def sort_file(file_dict):
 
 
 # this should also take in a file suffix like 'out', 1, 2, to append to file name written
-def write_file(sorted_dict,offset):
+def write_file(sorted_dict,suffix):
     print("write file")
-    with open('outfile_{}.txt'.format(str(offset)), 'w') as f:
+    with open('outfile_{}.txt'.format(str(suffix)), 'w') as f:
         for key,value in sorted_dict.items():
             f.write("%s %s\n" % (key,value))
 
@@ -53,16 +54,25 @@ def sort_merge_files():
     print("sort merge n-files")
     # read all outfile_# into separate dict
         # scan all files with 'outfile_' prefix
-    os.chdir("./")
+    out_directory = "./"
+    os.chdir(out_directory)
+    result = {}
+    result_dict = {}
     for file in glob.glob("outfile_*.txt"):
-        
         # read each of these files into a separate dict
-
-    # use heapq.merge(iterables, key, reverse = True)
-
+        temp_dict = {}
+        with open(file, 'r') as f:
+            for line in f:
+                key, val = line.split()
+                temp_dict[key] = int(val)
+        # use heapq.merge(iterables, key, reverse = True)  two dict at a time, this maybe better than doing an n-file merge sort in case
+        # of limited storage.  The merged files can then be deleted as we pull more file segements from remote.
+        # got stuck here as took me a while to figure out how to use dict with heapq.merge
+        result_generator = heapq.merge(temp_dict.items(), result_dict.items(), key = lambda item:item[1], reverse=True)
+        result_dict = {c[0]:c[1] for c in result_generator}
+        
     # write the result
-
-
+    write_file(result_dict, "final")
 
 
 DEFAULT_FILE_LOCATION = '/home/azhar/projects/triad-challenge/triad-challenge/spacemaps_technical_challenge.txt'
