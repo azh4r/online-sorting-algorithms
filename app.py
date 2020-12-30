@@ -1,6 +1,7 @@
 import sys
 import glob, os
 import heapq
+import itertools
 
 # This module should read in the parameters
 # or ask for parameters to be entered.
@@ -69,7 +70,9 @@ def sort_merge_files():
         # of limited storage.  The merged files can then be deleted as we pull more file segements from remote.
         # got stuck here as took me a while to figure out how to use dict with heapq.merge
         result_generator = heapq.merge(temp_dict.items(), result_dict.items(), key = lambda item:item[1], reverse=True)
-        result_dict = {c[0]:c[1] for c in result_generator}
+        # Saving only the first 500 items in merge sorted dict
+        sliced_generator = itertools.islice(result_generator, 500)
+        result_dict = {c[0]:c[1] for c in sliced_generator}
         
     # write the result
     write_file(result_dict, "final")

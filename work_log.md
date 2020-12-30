@@ -28,6 +28,7 @@ The idea is to:
 7. Take into account extremely large files.
 
 8. Reducing data transfer.
+    * The only thing I think of here is while transferring file from AWS S3, if connection breaks we continue transfer from where the connection broke, not restart the connection from the start.  I see no other data transfer optimization as the last chunk of file may contain the max numbers we are looking for. 
 
 * Are 3 and 6 contradictory? 
 Or can we still Sort to get the largest numbers but then return X largest number IDs in unsorted list?
@@ -50,5 +51,13 @@ Each record can have a 32 bit numeric value.
 
 * Python sorted() function uses Timsort algorithm which is a combination of mergesort and insertsort algorithms.  Go over these sorting algorithms for the interview.
 
-* Added n-file mergesort but merging one file at a time.  But this is not optimal as the merged file grows and is written so storage requirement will be 
-large.  So with the same storage requirement doing a n-file sort merge will be faster. 
+* Added file mergesort but merging one file at a time.  But this is not optimal as the merged file grows and is written so storage requirement will be 
+large.  So with the same storage requirement doing a n-way file mergesort will be faster. 
+
+* If we are searching for 100 largest numbers then if each file size is 100, then when we merge with a new file segment we can discard values that are smaller than the values in the final file. This would reduce storage requirements.
+
+* But what if we are searching for 100 max numbers in a file size of billions. In this case we don't want our file chunks to be 100. So at a minimum we want our file chunk sizes to be larger than the number of values we are looking for but not larger than what can be handled in the instance memory. 
+
+* MapReduce? 
+
+* Now I am only saving in memory the top X dict items after merging, so this will not grow beyond X. 
