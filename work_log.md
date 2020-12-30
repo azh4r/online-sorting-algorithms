@@ -61,3 +61,11 @@ large.  So with the same storage requirement doing a n-way file mergesort will b
 * MapReduce? 
 
 * Now I am only saving in memory the top X dict items after merging, so this will not grow beyond X. 
+
+* I think first implementation is done as I am:
+    * Segmenting input file into chunks of manageable size
+    * Sorting each file using sorted (which is selection sort and mergesort combination)
+    * Using priority queue for merging different files, keeping space complexity limited by only keeping the top X number of records. 
+    * Still need to implement a robust mechanism for getting remote file in chunks and retries in case of network failure.
+    * Dockerize solution
+    * Add exception handling, testing, logging.
