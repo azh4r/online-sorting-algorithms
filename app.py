@@ -5,13 +5,12 @@ import itertools
 
 # This module should read in the parameters
 # or ask for parameters to be entered.
-# TODO
 
-# function to read in a file into a dictionary
-# this should also take in number of lines to read
+# Class with functions to get handle to a file and
+# to read in a file.
+# Update: This should also take in number of lines to read
 # and return also that file has ended. 
 class DataFile:
-
     def get_handle(file_location):
         in_file = open(file_location, "r")
         return in_file
@@ -82,7 +81,7 @@ DEFAULT_FILE_LOCATION = '/home/azhar/projects/triad-challenge/triad-challenge/sp
 
 file_location = ''
 
-# read in the file name from command line
+# Read in the file name from command line
 # parameters must be X, location of file.   (these 2 are required)
 # initially I can use local file later on I will change it to remote file. 
 # main function will read command line parameters
