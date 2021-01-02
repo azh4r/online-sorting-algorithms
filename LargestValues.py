@@ -5,6 +5,7 @@ import itertools
 from tqdm import tqdm
 import FileDownloader
 from DataFile import DataFile
+import time
 
 # This module reads in the command line parameters and 
 # has the class and functions to execute the main process. 
@@ -20,7 +21,7 @@ def dict_lines(lines):
 
 # Function will sort a dict object to return a sorted dict
 def sort_dict(file_dict):
-    print("sort dict")
+    # print("sort dict")
     sorted_dict = dict(sorted(file_dict.items(), key = lambda item: item[1], reverse=True))
     return sorted_dict
 
@@ -28,7 +29,7 @@ def sort_dict(file_dict):
 # Function to take a dict object and write it to a text file. 
 # this should also take in a file suffix like 'out', 1, 2, to append to file name written
 def write_file(sorted_dict,suffix):
-    print("write file")
+    # print("write file")
     with open('outfile_{}.txt'.format(str(suffix)), 'w') as f:
         for key,value in sorted_dict.items():
             f.write("%s %s\n" % (key,value))
@@ -91,11 +92,14 @@ class LargestValues:
         # Saving only the first X items in merge sorted dict
         sliced_generator = itertools.islice(result_generator, LargestValues.X_largest_values)
         LargestValues.result_dict = {c[0]:c[1] for c in sliced_generator}
+        # time.sleep(1)
         if last_chunk:
             # write the result
             write_file(LargestValues.result_dict, "new_final")
             LargestValues.progress_bar.close()
-
+            for k, v in LargestValues.result_dict.items():
+                print(k)
+                
     def processWithLocalFiles(file_location, X_largest_numbers):
         # get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time
@@ -127,7 +131,7 @@ class LargestValues:
 # initially I can use local file later on I will change it to remote file. 
 # main function will read command line parameters
 def main():
-    DEFAULT_X = 50
+    DEFAULT_X = 10
     file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValues.DEFAULT_FILE_LOCATION
     X_largest_numbers = sys.argv[2] if len(sys.argv) >= 3 else DEFAULT_X
 
