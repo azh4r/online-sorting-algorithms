@@ -84,6 +84,7 @@ def get_chunks(response_handle, chunk_size, initial_pos, callback):
         last_chunk = False if current_pos < file_size else True
         lines, leftover_chunk = process_chunk(chunk, last_chunk, leftover_chunk)
         callback(lines, last_chunk, len(chunk))
+        #time.sleep(1)
 
 def process_chunk(chunk, is_last, leftover):
 
