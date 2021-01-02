@@ -98,8 +98,21 @@ Each record can have a 32 bit numeric value.
 * I also need to dockerize the app today!!!!
 
 * Looking at the data again, for the given sample the values from 0 to 1999 are distributed uniformly with a frequency from 0 to 4 throughout.  So a non-comparison sort algorithm like bucket sort maybe faster to merge compared to Timsort? Bucketsort can provide O(n) if values are evenly distributed but as bad as O(n^2) if only one bucket has all the values and linked list is used.
-* Non-comparison sort algorithm like counting sort may also work for the given sample file as total records N = 2000 while the k = (max-min)+1 = 2001 as well.  However if N is very very large and k stays the same then counting sort may not work.  Since they have asked us to consider a very large file this may not work if k stays the same. 
-* Use Partial Sort.  Let say we have 900 MB of data, get first 100MB, sort it and get the top X (lets say 100) numbers.  Get the next 100MB, sort it (bucket sort if evenly distributed) or default sort in Python (Timsort).  Now merge them with the already sorted top X numbers and keep the top X numbers again while discarding the rest. Repeat getting the next 100MB until data is exhausted. Ref: https://en.wikipedia.org/wiki/Partial_sorting
+* Non-comparison sort algorithm like counting sort may also work for the given sample file as total records N = 2000 while the k = (max-min)+1 = 2001 as well.  However if N is very very large and k stays the same then counting sort may not work.  Since they have asked us to consider a very large file this will not work if k stays the same. So discarding this approach. 
+* Use Partial Sort.  Let say we have 900 MB of data, get first 100MB, sort it and get the top X (lets say 100) numbers.  Get the next 100MB, sort it (bucket sort if evenly distributed) or default sort in Python (Timsort).  Now merge them with the already sorted top X numbers and keep the top X numbers again while discarding the rest using priority queue (heapq.merge). Repeat getting the next 100MB until data is exhausted. Ref: https://en.wikipedia.org/wiki/Partial_sorting
 * Given we don't need to have the X largest number sorted then we can use the variant "Partition-based selection".  https://en.wikipedia.org/wiki/Selection_algorithm#Partition-based_selection
-* But will Partition based selection work when doing external sorting given data maybe huge. 
+* Partition based selection like quickselect can be used to get the X largest values **without sorting** in linear time O(N) if a good pivot is chosen. O(n) to find the Xth largest element and then O(n) again to compare with all the N elements **without sorting**.  But worse case can be O(n^2). 
   
+
+**Different cases and algorithms**
+
+| Case | N (Total Records) | X (largest records) | Solution                                                          | Time Complexity  | Space Complexity | Storage | RAM    | Comments |
+|------|-------------------|---------------------|-------------------------------------------------------------------|------------------|------------------|---------|--------|----------|
+| A    | 100 Billion       | 10 Billion          | Mutli-instance External Sort? Hadoop?                             |                  |                  | 2 TB    | 240 GB |          |
+| B    | 10 Billion        | 10 Billion          | External Sort, merge heaps with blocks on disk                    | O(NLogX)         |                  | 240 GB  | 240 GB |          |
+| B    | 10 Billion        | 1 Billion           | External Sort, in-memory heapq.merge()                            | O(NlogX)         | O(X)             | 240 GB  | 24 GB  |          |
+| C    | 10 Billion        | 100                 | Priority Queue, max heap and compare with each N from file chunks | O(N)             | O(1)             | 240 GB  | 1 MB   |          |
+| D    | 1 Billion         | 1 MIllion           | Priority Queue, Merge sort or Counting sort in memory             | O(NlogX), O(N)   |                  | 24 GB   | 24 MB  |          |
+| E    | 1 Billion         | 100                 | Priority Queue, max heap and compare with each N in memory        | O(NlogX) -> O(N) | O(1)             | 24 GB   | 1 MB   |          |
+| F    | 1 Million         | 100                 | Priority Queue, max heap and compare with each N in memory        | O(NlogX) -> O(N) |                  |         |        |          |
+| G    | 1000              | 5                   | Priority Queue, max heap and compare with each N in memory        | O(NlogX)         |                  |         |        |          |
