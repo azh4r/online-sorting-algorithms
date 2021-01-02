@@ -37,9 +37,17 @@ class DataFile:
             file_handle.close()
         return (file_dict, offset, end_of_file)
 
+def dict_lines(lines):
+    dict_segment = {}
+    for line in lines:
+        key, val = line.split()
+        dict_segment[key] = int(val)
+    return dict_segment
+
+
 # Function will sort a dict object to return a sorted dict
-def sort_file(file_dict):
-    print("sort file")
+def sort_dict(file_dict):
+    print("sort dict")
     sorted_dict = dict(sorted(file_dict.items(), key = lambda item: item[1], reverse=True))
     return sorted_dict
 
@@ -52,9 +60,10 @@ def write_file(sorted_dict,suffix):
             f.write("%s %s\n" % (key,value))
 
 
-# Function to sort merge n-files.  
+# Function to sort merge 2 files at a time. Can do n file merge as heapq.merge can take more than 2 iterables
+# but in case of very large X value merging 2 files is fine. 
 def sort_merge_files():
-    print("sort merge n-files")
+    print("sort merge files 2 at a time")
     # read all outfile_# into separate dict
         # scan all files with 'outfile_' prefix
     out_directory = "./"
@@ -79,24 +88,39 @@ def sort_merge_files():
     # write the result
     write_file(result_dict, "final")
 
-class LargestValue:
+class LargestValues:
 
     DEFAULT_FILE_LOCATION = '/home/azhar/projects/triad-challenge/triad-challenge/spacemaps_technical_challenge.txt'
     REMOTE_FILE_LOCATION = 'https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt'
 
     file_location = ''
     progress_bar = None
+    result_dict = {}
+    X_largest_values = 0
+
+    # this process can later be changed to call a different algorithm
+    def process(response_handle, chunk_size, offset_bytes, X_largest_values):
+        LargestValues.X_largest_values = X_largest_values
+        LargestValues.get_chunks(response_handle, chunk_size, offset_bytes)
 
     def get_chunks(response_handle, chunk_size, offset_bytes):
         file_size = int(response_handle.headers.get('content-length', 0))
-        LargestValue.progress_bar = tqdm(total=file_size, unit='iB', unit_scale=True)
-        FileDownloader.get_chunks(response_handle, chunk_size, offset_bytes, LargestValue.process_chunk)
+        LargestValues.progress_bar = tqdm(total=file_size, unit='iB', unit_scale=True)
+        FileDownloader.get_chunks(response_handle, chunk_size, offset_bytes, LargestValues.process_chunk)
 
     def process_chunk(lines, last_chunk, chunk_size):
-        LargestValue.progress_bar.update(chunk_size)
-        print("am I called?", last_chunk)
+        LargestValues.progress_bar.update(chunk_size)
+        dict_chunk = dict_lines(lines)
+        sorted_dict_chunk = sort_dict(dict_chunk)
+        result_generator = heapq.merge(sorted_dict_chunk.items(), LargestValues.result_dict.items(),
+            key = lambda item:item[1], reverse=True)
+        # Saving only the first X items in merge sorted dict
+        sliced_generator = itertools.islice(result_generator, LargestValues.X_largest_values)
+        LargestValues.result_dict = {c[0]:c[1] for c in sliced_generator}
         if last_chunk:
-            LargestValue.progress_bar.close()
+            # write the result
+            write_file(LargestValues.result_dict, "new_final")
+            LargestValues.progress_bar.close()
 
 # Read in the file name from command line
 # parameters must be X, location of file.   (these 2 are required)
@@ -104,12 +128,12 @@ class LargestValue:
 # main function will read command line parameters
 def main():
     DEFAULT_X = 10
-    file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValue.DEFAULT_FILE_LOCATION
+    file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValues.DEFAULT_FILE_LOCATION
     X = sys.argv[2] if len(sys.argv) >= 3 else DEFAULT_X
     # print(file_location)
     # get count of lines in file.. then calculate the number of lines per file read 
     # OR amount of lines you want to read at a time
-    # create a loop that will keep calling read_file(), sort_file(), write_file() until 
+    # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
     # end of file is reached.
     end_of_file = False
     # offset = 0
@@ -121,7 +145,7 @@ def main():
     # file_suffix = 1
     # while not end_of_file:
     #     file_dict, offset, end_of_file = DataFile.read_file(file_handle, lines_to_read, offset)
-    #     sorted_dict = sort_file(file_dict)
+    #     sorted_dict = sort_dict(file_dict)
     #     write_file(sorted_dict, file_suffix)
     #     file_suffix += 1
     
@@ -129,11 +153,11 @@ def main():
     # # get the top X numbers from the final file
     # sort_merge_files()
 
-    remote_file_url = LargestValue.REMOTE_FILE_LOCATION
+    remote_file_url = LargestValues.REMOTE_FILE_LOCATION
     offset_bytes = 500
-    chunk_size = 8
+    chunk_size_in_blocks = 8 # each block is 1024 byte
     response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)
-    LargestValue.get_chunks(response_handle, chunk_size, offset_bytes)
+    LargestValues.process(response_handle, chunk_size_in_blocks, offset_bytes, X)
 
     
 if __name__ == '__main__':
