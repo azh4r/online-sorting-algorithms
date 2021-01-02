@@ -121,19 +121,6 @@ def download_file(url_pos: int) -> None:
     file_size_online = int(r.headers.get('content-length', 0))
     file = DOWNLOAD_FOLDER / url.split('/')[-1]
 
-    # if file.exists():
-    #     file_size_offline = file.stat().st_size
-
-    #     if file_size_online != file_size_offline:
-    #         click.echo(f'File {file} is incomplete. Resume download.')
-    #         # file_size_offline is the new start positon for resume
-    #         downloader(url, file_size_offline)
-    #     else:
-    #         click.echo(f'File {file} is complete. Skip download.')
-    #         pass
-    # else:
-    #     click.echo(f'File {file} does not exist. Start download.')
-    #     downloader(url)
     downloader(url_pos)
 
 
