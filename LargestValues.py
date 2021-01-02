@@ -17,7 +17,10 @@ class DataFile:
     def get_handle(file_location):
         in_file = open(file_location, "r")
         return in_file
-
+    
+    # method to convert a segment of txt file into dict 
+    # returning the segment in dict and the position in the file
+    # and whether it reached the end of file or not. 
     def read_file(file_handle, lines_to_read, offset):
         end_of_file = False
         file_dict = {}
@@ -37,6 +40,7 @@ class DataFile:
             file_handle.close()
         return (file_dict, offset, end_of_file)
 
+# Function to convert a line iterable into a dict
 def dict_lines(lines):
     dict_segment = {}
     for line in lines:
@@ -52,6 +56,7 @@ def sort_dict(file_dict):
     return sorted_dict
 
 
+# Function to take a dict object and write it to a text file. 
 # this should also take in a file suffix like 'out', 1, 2, to append to file name written
 def write_file(sorted_dict,suffix):
     print("write file")
@@ -60,8 +65,9 @@ def write_file(sorted_dict,suffix):
             f.write("%s %s\n" % (key,value))
 
 
-# Function to sort merge 2 files at a time. Can do n file merge as heapq.merge can take more than 2 iterables
-# but in case of very large X value merging 2 files is fine. 
+# Function to sort merge n files but 2 files at a time. 
+# Can do n file merge as heapq.merge can take more than 2 iterables
+# but in case of limited RAM and very large X value merging 2 files is better. 
 def sort_merge_files():
     print("sort merge files 2 at a time")
     # read all outfile_# into separate dict
