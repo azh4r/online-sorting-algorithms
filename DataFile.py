@@ -3,7 +3,7 @@
 # Update: This should also take in number of lines to read
 # and return also that file has ended. 
 class DataFile:
-    
+
     def get_handle(file_location):
         in_file = open(file_location, "r")
         return in_file
@@ -29,3 +29,12 @@ class DataFile:
         if end_of_file:
             file_handle.close()
         return (file_dict, offset, end_of_file)
+
+    # Function to take a dict object and write it to a text file. 
+    # this should also take in a file suffix like 'out', 1, 2, to append to file name written
+    # update: changing this to take filename but append with txt.
+    def write_file(sorted_dict,file_name):
+        # print("write file")
+        with open('{}.txt'.format(str(file_name)), 'w') as f:
+            for key,value in sorted_dict.items():
+                f.write("%s %s\n" % (key,value))

@@ -26,16 +26,6 @@ def sort_dict(file_dict):
     return sorted_dict
 
 
-# Function to take a dict object and write it to a text file. 
-# this should also take in a file suffix like 'out', 1, 2, to append to file name written
-# update: changing this to take filename but append with txt.
-def write_file(sorted_dict,file_name):
-    # print("write file")
-    with open('{}.txt'.format(str(file_name)), 'w') as f:
-        for key,value in sorted_dict.items():
-            f.write("%s %s\n" % (key,value))
-
-
 # Function to sort merge n files but 2 files at a time. 
 # Can do n file merge as heapq.merge can take more than 2 iterables
 # but in case of limited RAM and very large X value merging 2 files is better. 
@@ -63,7 +53,7 @@ def sort_merge_files(X_largest_numbers):
         result_dict = {c[0]:c[1] for c in sliced_generator}
         
     # write the result_dict dictionary
-    write_file(result_dict, "result_final")
+    DataFile.write_file(result_dict, "result_final")
 
 class LargestValues:
 
@@ -98,7 +88,7 @@ class LargestValues:
         # time.sleep(1)
         if last_chunk:
             # write the result
-            write_file(LargestValues.result_dict, "result_final")
+            DataFile.write_file(LargestValues.result_dict, "result_final")
             LargestValues.progress_bar.close()
             for k, v in LargestValues.result_dict.items():
                 print(k)
@@ -123,7 +113,7 @@ class LargestValues:
         while not end_of_file:
             file_dict, offset, end_of_file = DataFile.read_file(file_handle, lines_to_read, offset)
             sorted_dict = sort_dict(file_dict)
-            write_file(sorted_dict, file_name_prefix + str(file_suffix))
+            DataFile.write_file(sorted_dict, file_name_prefix + str(file_suffix))
             file_suffix += 1
 
         # do n sort file merge
