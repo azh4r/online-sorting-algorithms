@@ -136,8 +136,8 @@ def main(remote_file_url, x_largest_numbers):
     #LargestValues.processWithLocalFiles(file_location, X_largest_numbers)
 
 @click.command()
-@click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, help='URL location for the data file')
-@click.option('--x', default=LargestValues.DEFAULT_X, help='Number of Largest Values to get from data file')
+@click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
+@click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 def cli(url, x):
     main(url, int(x))
 
