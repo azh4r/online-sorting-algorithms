@@ -57,7 +57,7 @@ def downloader(url_position: int, resume_byte_pos: int = None):
             curr_pos = curr_pos + len(chunk)
             last_chunk = False if curr_pos  < file_size else True
             #print(last_chunk)
-            lines, leftover_chunk = process_chunk(chunk,last_chunk, leftover_chunk)
+            lines, leftover_chunk = convert_chunk(chunk,last_chunk, leftover_chunk)
             for line in lines:
                 f.write("%s\n" % line)
             time.sleep(1.0)
@@ -82,13 +82,13 @@ def get_chunks(response_handle, chunk_size, initial_pos, callback):
     for chunk in response_handle.iter_content(read_chunk_size):
         current_pos = current_pos + len(chunk)
         last_chunk = False if current_pos < file_size else True
-        lines, leftover_chunk = process_chunk(chunk, last_chunk, leftover_chunk)
+        lines, leftover_chunk = convert_chunk(chunk, last_chunk, leftover_chunk)
         callback(lines, last_chunk, len(chunk))
         #time.sleep(1)
 
 # Convert a chunk into text lines and also return the piece of the chunk 
 # that was not a complete line
-def process_chunk(chunk, is_last, leftover):
+def convert_chunk(chunk, is_last, leftover):
 
     # Add previous leftover to current chunk
     chunk = leftover + chunk
