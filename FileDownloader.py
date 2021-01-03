@@ -128,9 +128,7 @@ def download_file(url_pos: int) -> None:
 def cli():
     # Program for downloading in chunks and fixing each chunk 
     # $python FileDownloader.py download 
-    
     pass
-
 
 @cli.command()
 def download():

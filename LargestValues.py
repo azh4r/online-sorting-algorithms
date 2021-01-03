@@ -28,9 +28,10 @@ def sort_dict(file_dict):
 
 # Function to take a dict object and write it to a text file. 
 # this should also take in a file suffix like 'out', 1, 2, to append to file name written
-def write_file(sorted_dict,suffix):
+# update: changing this to take filename but append with txt.
+def write_file(sorted_dict,file_name):
     # print("write file")
-    with open('outfile_{}.txt'.format(str(suffix)), 'w') as f:
+    with open('{}.txt'.format(str(file_name)), 'w') as f:
         for key,value in sorted_dict.items():
             f.write("%s %s\n" % (key,value))
 
@@ -41,7 +42,8 @@ def write_file(sorted_dict,suffix):
 def sort_merge_files(X_largest_numbers):
     print("sort merge files 2 at a time")
     # read all outfile_# into separate dict
-        # scan all files with 'outfile_' prefix
+        # scan all files with 'outfile_' prefix 
+        # not a good design, needs to be refactored.
     out_directory = "./"
     os.chdir(out_directory)
     result_dict = {}
@@ -61,7 +63,7 @@ def sort_merge_files(X_largest_numbers):
         result_dict = {c[0]:c[1] for c in sliced_generator}
         
     # write the result_dict dictionary
-    write_file(result_dict, "final")
+    write_file(result_dict, "result_final")
 
 class LargestValues:
 
@@ -74,7 +76,8 @@ class LargestValues:
     X_largest_values = 0
 
     # this process can later be changed to call a different algorithm
-    def process(response_handle, chunk_size, offset_bytes, X_largest_values):
+    def process(remote_file_url, chunk_size, offset_bytes, X_largest_values):
+        response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)        
         LargestValues.X_largest_values = X_largest_values
         LargestValues.get_chunks(response_handle, chunk_size, offset_bytes)
 
@@ -95,7 +98,7 @@ class LargestValues:
         # time.sleep(1)
         if last_chunk:
             # write the result
-            write_file(LargestValues.result_dict, "new_final")
+            write_file(LargestValues.result_dict, "result_final")
             LargestValues.progress_bar.close()
             for k, v in LargestValues.result_dict.items():
                 print(k)
@@ -114,10 +117,13 @@ class LargestValues:
         file_dict, offset, end_of_file = DataFile.read_file(file_handle, 0, 500)
         # Write the read file into sorted segmented file chunks
         file_suffix = 1
+        # here this writes the same file_name prefix as to be read by sort_merge_files 
+        # not a good design, needs to be refactored. 
+        file_name_prefix = "outfile_"
         while not end_of_file:
             file_dict, offset, end_of_file = DataFile.read_file(file_handle, lines_to_read, offset)
             sorted_dict = sort_dict(file_dict)
-            write_file(sorted_dict, file_suffix)
+            write_file(sorted_dict, file_name_prefix + str(file_suffix))
             file_suffix += 1
 
         # do n sort file merge
@@ -138,8 +144,8 @@ def main():
 
     offset_bytes = 500
     chunk_size_in_blocks = 8 # each block is 1024 byte
-    response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)
-    LargestValues.process(response_handle, chunk_size_in_blocks, offset_bytes, X_largest_numbers)
+
+    LargestValues.process(remote_file_url, chunk_size_in_blocks, offset_bytes, X_largest_numbers)
     #LargestValues.processWithLocalFiles(file_location, X_largest_numbers)
     
 if __name__ == '__main__':
