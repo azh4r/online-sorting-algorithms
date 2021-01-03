@@ -7,6 +7,7 @@ import FileDownloader
 from DataFile import DataFile
 import time
 import click
+import validators
 
 # This module reads in the command line parameters and 
 # has the class and functions to execute the main process. 
@@ -139,6 +140,9 @@ def main(remote_file_url, x_largest_numbers):
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 def cli(url, x):
+    if not validators.url(url):
+        print("Entered url did not pass validation, please make sure it is correct.")
+        return
     main(url, int(x))
 
 
