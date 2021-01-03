@@ -1,5 +1,4 @@
 import click
-import hashlib
 import requests
 import time
 from pathlib import Path
@@ -72,7 +71,8 @@ def get_response_handle(url: str, resume_byte_pos: int = None):
     res_handle = requests.get(url, stream = True, headers= resume_header)
     return res_handle
 
-# trying to do a callback from the main class
+# After getting and processing a chunk this will do a callback to the calling
+# class to send the processed chunk
 def get_chunks(response_handle, chunk_size, initial_pos, callback):
     file_size = int(response_handle.headers.get('content-length', 0))
     current_pos = initial_pos
@@ -86,6 +86,8 @@ def get_chunks(response_handle, chunk_size, initial_pos, callback):
         callback(lines, last_chunk, len(chunk))
         #time.sleep(1)
 
+# Convert a chunk into text lines and also return the piece of the chunk 
+# that was not a complete line
 def process_chunk(chunk, is_last, leftover):
 
     # Add previous leftover to current chunk
