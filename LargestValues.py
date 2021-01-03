@@ -6,6 +6,7 @@ from tqdm import tqdm
 import FileDownloader
 from DataFile import DataFile
 import time
+import click
 
 # This module reads in the command line parameters and 
 # has the class and functions to execute the main process. 
@@ -56,7 +57,7 @@ def sort_merge_files(X_largest_numbers):
     DataFile.write_file(result_dict, "result_final")
 
 class LargestValues:
-
+    DEFAULT_X = 10
     DEFAULT_FILE_LOCATION = '/home/azhar/projects/triad-challenge/triad-challenge/spacemaps_technical_challenge_orig.txt'
     REMOTE_FILE_LOCATION = 'https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt'
 
@@ -126,17 +127,20 @@ class LargestValues:
 # parameters must be X, location of file.   (these 2 are required)
 # initially I can use local file later on I will change it to remote file. 
 # main function will read command line parameters
-def main():
-    DEFAULT_X = 10
-    remote_file_url = sys.argv[1] if len(sys.argv) >=2 else LargestValues.REMOTE_FILE_LOCATION
+def main(remote_file_url, x_largest_numbers):
     file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValues.DEFAULT_FILE_LOCATION
-    X_largest_numbers = int(sys.argv[2]) if len(sys.argv) >= 3 else DEFAULT_X
-
     offset_bytes = 500
     chunk_size_in_blocks = 8 # each block is 1024 byte
 
-    LargestValues.process(remote_file_url, chunk_size_in_blocks, offset_bytes, X_largest_numbers)
+    LargestValues.process(remote_file_url, chunk_size_in_blocks, offset_bytes, x_largest_numbers)
     #LargestValues.processWithLocalFiles(file_location, X_largest_numbers)
-    
+
+@click.command()
+@click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, help='URL location for the data file')
+@click.option('--x', default=LargestValues.DEFAULT_X, help='Number of Largest Values to get from data file')
+def cli(url, x):
+    main(url, int(x))
+
+
 if __name__ == '__main__':
-    main()
+    cli()
