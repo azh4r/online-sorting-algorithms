@@ -132,10 +132,10 @@ class LargestValues:
 # main function will read command line parameters
 def main():
     DEFAULT_X = 10
+    remote_file_url = sys.argv[1] if len(sys.argv) >=2 else LargestValues.REMOTE_FILE_LOCATION
     file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValues.DEFAULT_FILE_LOCATION
-    X_largest_numbers = sys.argv[2] if len(sys.argv) >= 3 else DEFAULT_X
+    X_largest_numbers = int(sys.argv[2]) if len(sys.argv) >= 3 else DEFAULT_X
 
-    remote_file_url = LargestValues.REMOTE_FILE_LOCATION
     offset_bytes = 500
     chunk_size_in_blocks = 8 # each block is 1024 byte
     response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)
