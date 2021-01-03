@@ -96,12 +96,13 @@ class LargestValues:
                 print(k)
                 
     def processWithLocalFiles(file_location, X_largest_numbers):
-        # get count of lines in file.. then calculate the number of lines per file read 
-        # OR amount of lines you want to read at a time
+        # Get count of lines in file.. then calculate the number of lines per file read 
+        # OR amount of lines you want to read at a time <-- used this , ignore above
         # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
         # end of file is reached.
         end_of_file = False
         offset = 0
+        # process the local file 500 lines at a time
         lines_to_read = 500
         file_handle = DataFile.get_handle(file_location)
 
