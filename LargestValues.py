@@ -1,3 +1,4 @@
+from MaxHeap import MaxHeap
 import sys
 import glob, os
 import heapq
@@ -67,6 +68,7 @@ class LargestValues:
     progress_bar = None
     result_dict = {}
     X_largest_values = 0
+    max_heap = None
 
     # this process can later be changed to call a different algorithm
     def process(remote_file_url, chunk_size, offset_bytes, X_largest_values):
@@ -95,8 +97,29 @@ class LargestValues:
             LargestValues.progress_bar.close()
             for k, v in LargestValues.result_dict.items():
                 print(k)
-                
-    def processWithLocalFiles(file_location, X_largest_numbers):
+    
+
+    def process_maxheap(remote_file_url, chunk_size, offset_bytes, x_largest_values):
+        LargestValues.max_heap = MaxHeap([],x_largest_values)
+        response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)
+        file_size = int(response_handle.headers.get('content-length', 0))
+        LargestValues.progress_bar = tqdm(total=file_size, unit='iB', unit_scale=True)
+        FileDownloader.get_chunks(response_handle, chunk_size, offset_bytes, LargestValues.process_single_maxheap)
+
+    def process_single_maxheap(lines, last_chunk, chunk_size):
+        LargestValues.progress_bar.update(chunk_size)
+        for line in lines:
+            key, value = line.split()
+            LargestValues.max_heap.add((int(value),key))
+        if last_chunk:
+            LargestValues.progress_bar.close()
+            # write the result
+            elements = LargestValues.max_heap.getLargest()
+            for elem in elements:
+                print(elem[1],' ', elem[0])
+
+
+    def process_with_local_files(file_location, X_largest_numbers):
         # Get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time <-- used this , ignore above
         # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
@@ -133,9 +156,8 @@ class LargestValues:
 def main(remote_file_url, x_largest_numbers,chunk_size_in_blocks):
     file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValues.DEFAULT_FILE_LOCATION
     offset_bytes = 500
-  
-    LargestValues.process(remote_file_url, chunk_size_in_blocks, offset_bytes, x_largest_numbers)
-    #LargestValues.processWithLocalFiles(file_location, X_largest_numbers)
+    LargestValues.process_maxheap(remote_file_url, chunk_size_in_blocks, offset_bytes, x_largest_numbers)
+    #LargestValues.process_with_local_files(file_location, X_largest_numbers)
 
 @click.command()
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
