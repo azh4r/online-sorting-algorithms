@@ -6,7 +6,8 @@ TRI-AD coding challenge
   * Create the virtual environment: `python -m venv env`
   * Install the required packages: `pip install -r requirements.txt`
   * `python LargestValues.py` for default options
-  * `python LargestValues.py --url https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt --x 5` 
+  * `python LargestValues.py --help` for help on usage, shows how to set options
+  * `python LargestValues.py --url https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt --x 5 --chunk_size 8` 
 
 * Run the pytest on the app from the command line in the directory where LargestValues.py module is:
   * `pytest`
@@ -20,7 +21,8 @@ TRI-AD coding challenge
 
 * Run the app inside the docker container 
   * Run default configuration `docker run --rm -it triadchallenge:latest` 
-  * Run with options `docker run --rm -it triadchallenge:latest --url https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt --x 5` 
+  * `python LargestValues.py --help` for help on usage, shows how to set options
+  * Run with options `docker run --rm -it triadchallenge:latest --url https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt --x 5 --chunk_size 8` 
 
 * Run the pytests inside docker container
   * `docker run --rm -it --entrypoint "pytest" triadchallenge:latest /app`

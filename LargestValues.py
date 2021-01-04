@@ -61,6 +61,7 @@ class LargestValues:
     DEFAULT_X = 10
     DEFAULT_FILE_LOCATION = '/home/azhar/projects/triad-challenge/triad-challenge/spacemaps_technical_challenge_orig.txt'
     REMOTE_FILE_LOCATION = 'https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt'
+    CHUNK_SIZE_IN_BLOCKS = 8 # each block is 1024 byte
 
     file_location = ''
     progress_bar = None
@@ -129,22 +130,22 @@ class LargestValues:
 # parameters must be X, location of file.   (these 2 are required)
 # initially I can use local file later on I will change it to remote file. 
 # main function will read command line parameters
-def main(remote_file_url, x_largest_numbers):
+def main(remote_file_url, x_largest_numbers,chunk_size_in_blocks):
     file_location = sys.argv[1] if len(sys.argv) >=2 else LargestValues.DEFAULT_FILE_LOCATION
     offset_bytes = 500
-    chunk_size_in_blocks = 8 # each block is 1024 byte
-
+  
     LargestValues.process(remote_file_url, chunk_size_in_blocks, offset_bytes, x_largest_numbers)
     #LargestValues.processWithLocalFiles(file_location, X_largest_numbers)
 
 @click.command()
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
-def cli(url, x):
+@click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
+def cli(url, x, chunk_size):
     if not validators.url(url):
         print("Entered url did not pass validation, please make sure it is correct.")
         return
-    main(url, int(x))
+    main(url, int(x), int(chunk_size))
 
 
 if __name__ == '__main__':
