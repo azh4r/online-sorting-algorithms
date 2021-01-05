@@ -1,10 +1,9 @@
 from heapq import heapify, heappush, heappushpop, nlargest
-from typing import List
 
 # Class to convert heapq, which is a min heap into max heap with a fixed max size.
 # Heapq is not synchrnoized so only thread can update this
 class MaxHeap:
-    def __init__(self, list:List, x_size):
+    def __init__(self, list, x_size):
         self.heap = [(element[1], element[0]) for element in list]
         self.length = x_size
         heapify( self.heap)
