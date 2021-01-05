@@ -11,6 +11,7 @@ import click
 import validators
 from pathlib import Path
 import ProcessSortedMemoryMerges
+import ProcessSinglePriorityQueue
 
 # This module reads in the command line parameters and 
 # has the class and functions to execute the main process. 
@@ -30,57 +31,15 @@ class LargestValues:
     max_heap = None
 
 
-    def processSortedMemoryMerges(url, chunk_size, offset_bytes, x):
+    def processSortedMemoryMerges(url, chunk_size, offset_bytes, x_largest_values):
         sortedMemoryMerge = ProcessSortedMemoryMerges.SortedMemoryMerge
-        sortedMemoryMerge.process(sortedMemoryMerge,url, int(chunk_size), offset_bytes, int(x))
-
-    def process_maxheap(remote_file_url, chunk_size, offset_bytes, x_largest_values):
-        LargestValues.max_heap = MaxHeap([],x_largest_values)
-        response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)
-        file_size = int(response_handle.headers.get('content-length', 0))
-        LargestValues.progress_bar = tqdm(total=file_size, unit='iB', unit_scale=True)
-        FileDownloader.get_chunks(response_handle, chunk_size, offset_bytes, LargestValues.process_single_maxheap)
-
-    def process_single_maxheap(lines, last_chunk, chunk_size):
-        LargestValues.progress_bar.update(chunk_size)
-        for line in lines:
-            key, value = line.split()
-            LargestValues.max_heap.add((int(value),key))
-        if last_chunk:
-            LargestValues.progress_bar.close()
-            # write the result
-            elements = LargestValues.max_heap.getLargest()
-            for elem in elements:
-                print(elem[1],' ', elem[0])
+        sortedMemoryMerge.process(sortedMemoryMerge,url, int(chunk_size), offset_bytes, int(x_largest_values))
 
 
-    def process_with_local_files(file_location, X_largest_numbers):
-        # Get count of lines in file.. then calculate the number of lines per file read 
-        # OR amount of lines you want to read at a time <-- used this , ignore above
-        # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
-        # end of file is reached.
-        end_of_file = False
-        offset = 0
-        # process the local file 500 lines at a time
-        lines_to_read = 500
-        file_handle = DataFile.get_handle(file_location)
+    def processSinglePriorityQueueMerges(url, chunk_size, offset_bytes, x_largest_values):
+        singlePriorityQueueMerges = ProcessSinglePriorityQueue.SinglePriorityQueueMerges
+        singlePriorityQueueMerges.process_maxheap(singlePriorityQueueMerges, url, chunk_size, offset_bytes, x_largest_values)
 
-        # skip the first 500 bytes
-        file_dict, offset, end_of_file = DataFile.read_file(file_handle, 0, 500)
-        # Write the read file into sorted segmented file chunks
-        file_suffix = 1
-        # here this writes the same file_name prefix as to be read by sort_merge_files 
-        # not a good design, needs to be refactored. 
-        file_name_prefix = "outfile_"
-        while not end_of_file:
-            file_dict, offset, end_of_file = DataFile.read_file(file_handle, lines_to_read, offset)
-            sorted_dict = sort_dict(file_dict)
-            DataFile.write_file(sorted_dict, file_name_prefix + str(file_suffix))
-            file_suffix += 1
-
-        # do n sort file merge
-        # get the top X numbers from the final file
-        sort_merge_files(X_largest_numbers)
 
     # Function to sort merge n files but 2 files at a time. 
     # Can do n file merge as heapq.merge can take more than 2 iterables
@@ -110,6 +69,36 @@ class LargestValues:
 
         # write the result_dict dictionary
         DataFile.write_file(result_dict, "result_final")
+
+    def process_with_local_files(self,file_location, X_largest_numbers):
+        # Get count of lines in file.. then calculate the number of lines per file read 
+        # OR amount of lines you want to read at a time <-- used this , ignore above
+        # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
+        # end of file is reached.
+        end_of_file = False
+        offset = 0
+        # process the local file 500 lines at a time
+        lines_to_read = 500
+        file_handle = DataFile.get_handle(file_location)
+
+        # skip the first 500 bytes
+        file_dict, offset, end_of_file = DataFile.read_file(file_handle, 0, 500)
+        # Write the read file into sorted segmented file chunks
+        file_suffix = 1
+        # here this writes the same file_name prefix as to be read by sort_merge_files 
+        # not a good design, needs to be refactored. 
+        file_name_prefix = "outfile_"
+        while not end_of_file:
+            file_dict, offset, end_of_file = DataFile.read_file(file_handle, lines_to_read, offset)
+            sorted_dict = sort_dict(file_dict)
+            DataFile.write_file(sorted_dict, file_name_prefix + str(file_suffix))
+            file_suffix += 1
+
+        # do n sort file merge
+        # get the top X numbers from the final file
+        self.sort_merge_files(X_largest_numbers)
+
+    
 
 
 # Read in the file name from command line
@@ -153,7 +142,7 @@ def single_priority_queue(url, x, chunk_size):
         print("Entered url did not pass validation, please make sure it is correct.")
         return
     offset_bytes = 500
-    LargestValues.process_maxheap(url, int(chunk_size), offset_bytes, int(x))
+    LargestValues.processSinglePriorityQueueMerges(url, int(chunk_size), offset_bytes, int(x))
 
 @cli.command()
 @click.option('--file', default=LargestValues.DEFAULT_FILE_LOCATION, type=click.STRING, help='File location for the data file')
