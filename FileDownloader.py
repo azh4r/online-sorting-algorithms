@@ -73,7 +73,7 @@ def get_response_handle(url: str, resume_byte_pos: int = None):
 
 # After getting and processing a chunk this will do a callback to the calling
 # class to send the processed chunk
-def get_chunks(response_handle, chunk_size, initial_pos, callback):
+def get_chunks(object,response_handle, chunk_size, initial_pos, callback):
     file_size = int(response_handle.headers.get('content-length', 0))
     current_pos = initial_pos
     block_size = 1024
@@ -83,7 +83,7 @@ def get_chunks(response_handle, chunk_size, initial_pos, callback):
         current_pos = current_pos + len(chunk)
         last_chunk = False if current_pos < file_size else True
         lines, leftover_chunk = convert_chunk(chunk, last_chunk, leftover_chunk)
-        callback(lines, last_chunk, len(chunk))
+        callback(object, lines, last_chunk, len(chunk))
         #time.sleep(1)
 
 # Convert a chunk into text lines and also return the piece of the chunk 
