@@ -15,5 +15,5 @@ class MaxHeap:
         else:
             heappushpop(self.heap, element)
             
-    def getLargest(self):
+    def getValues(self):
         return nlargest(self.length, self.heap)
