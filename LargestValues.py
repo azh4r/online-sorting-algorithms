@@ -17,7 +17,7 @@ import ProcessUsingLocalFileSortMerges
 
 class LargestValues:
     DEFAULT_X = 10
-    DEFAULT_FILE_LOCATION = '/home/azhar/projects/triad-challenge/triad-challenge/spacemaps_technical_challenge_orig.txt'
+    DEFAULT_FILE_LOCATION = './spacemaps_technical_challenge_orig.txt'
     REMOTE_FILE_LOCATION = 'https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt'
     CHUNK_SIZE_IN_BLOCKS = 8 # each block is 1024 byte
 

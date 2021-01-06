@@ -60,10 +60,13 @@ class LocalFileSortMerges:
         # not a good design, needs to be refactored. 
         self.directory_name = destination_dir
         if self.directory_name:
-           dir = 'out'
-           if os.path.exists(dir):
-              shutil.rmtree(dir)
-              os.makedirs(dir)
+            dir = 'out'
+            if os.path.exists(dir):
+                shutil.rmtree(dir)
+                os.makedirs(dir)
+            else:
+                os.makedirs(dir)
+
         os.chdir(self.directory_name)
         file_name_prefix = "outfile_"
         while not end_of_file:
