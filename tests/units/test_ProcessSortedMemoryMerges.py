@@ -1,3 +1,4 @@
+from DataFile import DataFile
 from ProcessSortedMemoryMerges import SortedMemoryMerge
 from unittest import mock
 
@@ -11,7 +12,12 @@ class TestSortedMemoryMerges:
         def close():
             return None
 
+    class nodatafile:
+        def write_file(sorted_dict, file_name):
+            return None
+
     @mock.patch('ProcessSortedMemoryMerges.SortedMemoryMerge.progress_bar',noprogress_bar)
+    @mock.patch('DataFile.DataFile',nodatafile)
     def test_SortedMemoryMerges_process_intermediate_chunks(self):
         sortedMemoryMerge = SortedMemoryMerge()
         sortedMemoryMerge.result_dict = {}
@@ -22,7 +28,8 @@ class TestSortedMemoryMerges:
         assert results == {'abc':90,'acc':81}
 
     @mock.patch('ProcessSortedMemoryMerges.SortedMemoryMerge.progress_bar',noprogress_bar)
-    def test_SortedMemoryMerges_process_last_chunk(requests_mock):
+    @mock.patch('DataFile.DataFile.write_file')
+    def test_SortedMemoryMerges_process_last_chunk(self, mock_datafile):
         sortedMemoryMerge = SortedMemoryMerge()
         sortedMemoryMerge.result_dict = {'abc':90,'acc':81}
         sortedMemoryMerge.x_largest_values = 2
