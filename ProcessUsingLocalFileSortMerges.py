@@ -1,12 +1,14 @@
 import heapq
 import itertools
 from DataFile import DataFile
-import os, glob
+import os, glob, shutil
 import DictHelper
 
 class LocalFileSortMerges:
 
     
+    directory_name = ''
+
     # def __init__(self):
     #     self.x_largest_values = 0    
 
@@ -18,8 +20,7 @@ class LocalFileSortMerges:
         # read all outfile_# into separate dict
             # scan all files with 'outfile_' prefix 
             # not a good design, needs to be refactored.
-        out_directory = "./"
-        os.chdir(out_directory)
+        # os.chdir(self.directory_name)
         result_dict = {}
         for file in glob.glob("outfile_*.txt"):
             # read each of these files into a separate dict
@@ -29,7 +30,7 @@ class LocalFileSortMerges:
                     key, val = line.split()
                     temp_dict[key] = int(val)
             # use heapq.merge(iterables, key, reverse = True)  two dict at a time, this maybe better than doing an n-file merge sort in case
-            # of limited storage.  The merged files can then be deleted as we pull more file segements from remote.
+            # of memory space.  The merged files can then be deleted as we pull more file segements from remote.
             # got stuck here as took me a while to figure out how to use dict with heapq.merge
             result_generator = heapq.merge(temp_dict.items(), result_dict.items(), key = lambda item:item[1], reverse=True)
             # Saving only the first X_largest_numbers items in merge sorted dict
@@ -37,9 +38,10 @@ class LocalFileSortMerges:
             result_dict = {c[0]:c[1] for c in sliced_generator}
 
         # write the result_dict dictionary
-        DataFile.write_file(result_dict, "result_final")
+        result_file = "result_final"
+        DataFile.write_file(result_dict, result_file)
 
-    def process_with_local_files(self,file_location, x_largest_numbers):
+    def process_with_local_files(self,file_location, x_largest_numbers, destination_dir):
         # Get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time <-- used this , ignore above
         # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
@@ -56,6 +58,13 @@ class LocalFileSortMerges:
         file_suffix = 1
         # here this writes the same file_name prefix as to be read by sort_merge_files 
         # not a good design, needs to be refactored. 
+        self.directory_name = destination_dir
+        if self.directory_name:
+           dir = 'out'
+           if os.path.exists(dir):
+              shutil.rmtree(dir)
+              os.makedirs(dir)
+        os.chdir(self.directory_name)
         file_name_prefix = "outfile_"
         while not end_of_file:
             file_dict, offset, end_of_file = DataFile.read_file(file_handle, lines_to_read, offset)

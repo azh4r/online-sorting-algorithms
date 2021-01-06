@@ -23,6 +23,6 @@ class SinglePriorityQueueMerges:
         if last_chunk:
             object.progress_bar.close()
             # write the result
-            elements = object.max_heap.getLargest()
+            elements = object.max_heap.getValues()
             for elem in elements:
-                print(elem[1],' ', elem[0])
+                print(elem[1])

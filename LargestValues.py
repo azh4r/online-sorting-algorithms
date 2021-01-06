@@ -33,8 +33,9 @@ class LargestValues:
 
 
     def processUsingLocalFileMerges(file_name, x_largest_values):
+        out_directory = 'out'
         localFileSortMerges = ProcessUsingLocalFileSortMerges.LocalFileSortMerges()
-        localFileSortMerges.process_with_local_files( file_name, x_largest_values)
+        localFileSortMerges.process_with_local_files( file_name, x_largest_values, out_directory)
     
 
 # Read in the file name from command line
