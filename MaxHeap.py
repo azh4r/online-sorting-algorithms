@@ -1,6 +1,8 @@
 from heapq import heapify, heappush, heappushpop, nlargest
 
-# Class to convert heapq, which is a min heap into max heap with a fixed max size.
+# Class to keep a heap with a fixed max size using heapq. 
+# this will be a min heap but since we only ask for nlargest values once at the end this 
+# will work for our specific usecase. 
 # Heapq is not synchrnoized so only thread can update this
 class MaxHeap:
     def __init__(self, list, x_size):
