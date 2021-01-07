@@ -29,3 +29,7 @@ TRI-AD coding challenge
 
 * Heapsort used in the priority queue is not stable.  So if we are returning 1 top record and two records have the same number values, then keys to either can be returned.  But since in the requirements output does not need to be in any particular order both answers should be correct. 
 
+* More test coverage needs to be added
+
+* 
+
