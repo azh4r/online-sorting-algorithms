@@ -1,14 +1,15 @@
-from MaxHeap import MaxHeap
+from MaxHeap import FixedSizeMaxHeap
 import FileDownloader
 from tqdm import tqdm
 
 
+# This is the best algorithm for getting the n-largest from an extremely large unsorted file. 
 class SinglePriorityQueueMerges:
 
     progress_bar = None
 
-    def process_maxheap(self,remote_file_url, chunk_size, offset_bytes, x_largest_values):
-        self.max_heap = MaxHeap([],x_largest_values)
+    def process(self,remote_file_url, chunk_size, offset_bytes, x_largest_values):
+        self.max_heap = FixedSizeMaxHeap([],x_largest_values)
         response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)
         file_size = int(response_handle.headers.get('content-length', 0))
         self.progress_bar = tqdm(total=file_size, unit='iB', unit_scale=True)
