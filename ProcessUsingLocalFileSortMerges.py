@@ -40,7 +40,7 @@ class LocalFileSortMerges:
         # write the result_dict dictionary
         result_file = "result_final"
         #DataFile.write_file(result_dict, result_file)
-        for k,v in result_dict.items.items():
+        for k,v in result_dict.items():
             print(k)
 
 
