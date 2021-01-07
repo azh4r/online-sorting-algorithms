@@ -55,10 +55,13 @@ class LocalFileSortDiskMerge:
                 file_dict[k].close()
             
         result_file = "result_final_2"
+        for k,v in result_dict.items():
+            print(k)
+            
         DataFile.write_file(result_dict, result_file)
 
     # read the input file and create local segmented files
-    def process_with_local_files_disk_merge(self,file_location, x_largest_numbers, destination_dir):
+    def process(self,file_location, x_largest_numbers, destination_dir):
         # Get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time <-- used this , ignore above
         # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
