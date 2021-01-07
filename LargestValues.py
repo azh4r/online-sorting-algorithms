@@ -1,7 +1,4 @@
-from MaxHeap import MaxHeap
-import sys
 import os
-from tqdm import tqdm
 from DataFile import DataFile
 import time
 import click
@@ -21,8 +18,12 @@ class LargestValues:
     DEFAULT_FILE_LOCATION = './spacemaps_technical_challenge_orig.txt'
     REMOTE_FILE_LOCATION = 'https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt'
     CHUNK_SIZE_IN_BLOCKS = 8 # each block is 1024 byte
+    DEFAULT_OUT_DIRECTORY = 'out'
 
+    def __init__(self):
+        self.test = ''
 
+    # Following can be simplified / refactored with a Command pattern
     def processSortedMemoryMerges(url, chunk_size, offset_bytes, x_largest_values):
         sortedMemoryMerge = ProcessSortedMemoryMerges.SortedMemoryMerge()
         sortedMemoryMerge.process(url, int(chunk_size), offset_bytes, int(x_largest_values))
@@ -30,18 +31,16 @@ class LargestValues:
 
     def processSinglePriorityQueueMerges(url, chunk_size, offset_bytes, x_largest_values):
         singlePriorityQueueMerges = ProcessSinglePriorityQueue.SinglePriorityQueueMerges()
-        singlePriorityQueueMerges.process_maxheap( url, chunk_size, offset_bytes, x_largest_values)
+        singlePriorityQueueMerges.process( url, chunk_size, offset_bytes, x_largest_values)
 
 
-    def processUsingLocalFileMerges(file_name, x_largest_values):
-        out_directory = 'out'
+    def processUsingLocalFileMerges(self,file_name, x_largest_values):
         localFileSortMerges = ProcessUsingLocalFileSortMerges.LocalFileSortMerges()
-        localFileSortMerges.process_with_local_files( file_name, x_largest_values, out_directory)
+        localFileSortMerges.process( file_name, x_largest_values, self.DEFAULT_OUT_DIRECTORY)
     
-    def processUsingLocalFileDiskMerges(file_name, x_largest_values):
-        out_directory = 'out'
+    def processUsingLocalFileDiskMerges(self,file_name, x_largest_values):
         localFileSortDiskMerges = ProcessUsingLocalFileSortDiskMerge.LocalFileSortDiskMerge()
-        localFileSortDiskMerges.process_with_local_files_disk_merge(file_name,x_largest_values, out_directory)
+        localFileSortDiskMerges.process(file_name,x_largest_values, self.DEFAULT_OUT_DIRECTORY)
 
 # Read in the file name from command line
 # parameters must be X, location of file.   (these 2 are required)
@@ -96,7 +95,7 @@ def files_on_disk(file, x, chunk_size):
         print("File not found, please make sure it is correct.")
         return
     offset_bytes = 500
-    LargestValues.processUsingLocalFileMerges(file, int(x))
+    LargestValues.processUsingLocalFileMerges(LargestValues,file, int(x))
 
 @cli.command()
 @click.option('--file', default=LargestValues.DEFAULT_FILE_LOCATION, type=click.STRING, help='File location for the data file')
@@ -108,7 +107,7 @@ def files_on_disk_merge(file, x, chunk_size):
         print("File not found, please make sure it is correct.")
         return
     offset_bytes = 500
-    LargestValues.processUsingLocalFileDiskMerges(file, int(x))
+    LargestValues.processUsingLocalFileDiskMerges(LargestValues,file, int(x))
 
 
 if __name__ == '__main__':
