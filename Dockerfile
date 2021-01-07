@@ -19,4 +19,4 @@ RUN useradd appuser && chown -R appuser /app
 USER appuser
 
 # Using [ENTRYPOINT] to pass in arguments
-ENTRYPOINT ["python", "LargestValues.py"]
+ENTRYPOINT ["python", "LargestValues/LargestValues.py"]
