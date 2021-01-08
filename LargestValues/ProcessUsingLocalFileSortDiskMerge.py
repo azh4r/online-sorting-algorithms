@@ -3,9 +3,10 @@ from MaxPriorityQueue import MaxPriorityQueue
 from DataFile import DataFile
 import os, glob, shutil
 import DictHelper
-import tempfile
+import FileDownloader
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Dict
+from tqdm import tqdm
 
 @dataclass(order=True)
 class PrioritizedItem:
@@ -13,7 +14,11 @@ class PrioritizedItem:
     item: Any=field(compare=False)
 
 class LocalFileSortDiskMerge:
-    
+
+    file_suffix = 0
+    destination_dir = ''
+    progress_bar = None
+
     def sort_merge_files_from_disk(self, x_largest_numbers):
         # scan all the already sorted out_*.txt files
         #   read the file_name and the first key / first number in the file into the dict. 
@@ -60,8 +65,44 @@ class LocalFileSortDiskMerge:
             
         DataFile.write_file(result_dict, result_file)
 
-    # read the input file and create local segmented files
-    def process(self,file_location, x_largest_numbers, destination_dir):
+    def create_destination_directory(self,destination_dir):
+        dir = destination_dir
+        if os.path.exists(dir):
+           shutil.rmtree(dir)
+           os.makedirs(dir)
+        else:
+           os.makedirs(dir)
+        return dir
+
+    def process(self,remote_file_url, chunk_size_in_blocks, offset_bytes, x_largest_values, destination_dir):
+        response_handle = FileDownloader.get_response_handle(remote_file_url, offset_bytes)        
+        self.x_largest_values = x_largest_values
+        self.destination_dir = self.create_destination_directory(destination_dir)
+        os.chdir(self.destination_dir)
+        self.get_chunks(response_handle, chunk_size_in_blocks, offset_bytes)
+
+    def get_chunks(self,response_handle, chunk_size_in_blocks, offset_bytes):
+        file_size = int(response_handle.headers.get('content-length', 0))
+        self.progress_bar = tqdm(total=file_size, unit='iB', unit_scale=True)
+        FileDownloader.get_chunks(self,response_handle, chunk_size_in_blocks, offset_bytes, self.process_chunk)
+
+    def process_chunk(func_object, object, lines, last_chunk, chunk_size):
+        object.progress_bar.update(chunk_size)
+        # Write the read file into sorted segmented file chunks
+        object.file_suffix += 1
+        lines_dict = DictHelper.dict_lines(lines)
+        sorted_lines_dict = DictHelper.sort_dict(lines_dict)
+        file_name_prefix = "outfile_"
+        DataFile.write_file(sorted_lines_dict, file_name_prefix + str(object.file_suffix))
+        if last_chunk:
+            #write the last file
+            #call
+            object.progress_bar.close()
+            object.sort_merge_files_from_disk(object.x_largest_values)
+
+    # deprecated, 
+    # changed into a test method for testing the core sort_merge_files_from_disk method.
+    def test_process_using_local_file(self,file_location, x_largest_numbers, destination_dir):
         # Get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time <-- used this , ignore above
         # create a loop that will keep calling read_file(), sort_dict(), write_file() until 
