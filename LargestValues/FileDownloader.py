@@ -13,20 +13,20 @@ URLS = [
 ]
 
 DOWNLOAD_FOLDER = Path('.')
-"""pathlib.Path: Points to the target directory of downloads."""
+#pathlib.Path: Points to the target directory of downloads.
 
 
 def downloader(url_position: int, resume_byte_pos: int = None):
-    """Download url in ``URLS[position]`` to disk with possible resumption.
+    # Download url in ``URLS[position]`` to disk with possible resumption.
 
-    Parameters
-    ----------
-    position: int
-        Position of url.
-    resume_byte_pos: int
-        Position of byte from where to resume the download
+    # Parameters
+    # ----------
+    # position: int
+    #     Position of url.
+    # resume_byte_pos: int
+    #     Position of byte from where to resume the download
 
-    """
+    # 
     # Get size of file
     url = URLS[url_position]
     r = requests.head(url)
