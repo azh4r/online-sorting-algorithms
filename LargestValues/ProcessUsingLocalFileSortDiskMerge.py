@@ -107,7 +107,7 @@ class LocalFileSortDiskMerge:
             object.sort_merge_files_from_disk(object.x_largest_values)
 
     # deprecated, changed into a test method for testing the core sort_merge_files_from_disk method.
-    @deprecated(reason='Now we are using the input file form remote url, but can use this for testing from local file')
+    #@deprecated(reason='Now we are using the input file form remote url, but can use this for testing from local file')
     def test_process_using_local_file(self,file_location, x_largest_numbers, destination_dir):
         # Get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time <-- used this , ignore above
