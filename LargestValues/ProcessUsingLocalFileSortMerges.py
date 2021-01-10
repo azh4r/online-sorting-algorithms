@@ -3,7 +3,10 @@ import itertools
 from DataFile import DataFile
 import os, glob, shutil
 import DictHelper
+import deprecated
 
+# Class to merge sort two files on disk at a time. 
+@deprecated(reason = 'Not used anymore. legacy class, used this when I was trying to figure out how to implement.')
 class LocalFileSortMerges:
 
     
@@ -42,8 +45,6 @@ class LocalFileSortMerges:
         #DataFile.write_file(result_dict, result_file)
         for k,v in result_dict.items():
             print(k)
-
-
 
         
 
