@@ -49,6 +49,7 @@ class SortedNWayMemoryMerge:
         sorted_dict_chunk = sort_dict(dict_chunk)
         object.sorted_dict_chunks_list.append(sorted_dict_chunk)
         if last_chunk:
+            object.progress_bar.close()           
             object.merge_sort_all_dicts(object.sorted_dict_chunks_list) 
             
     
@@ -80,7 +81,8 @@ class SortedNWayMemoryMerge:
         #     print(c)
         #time.sleep(1)
         # write the result
-        DataFile.write_file(result_dict, "result_final")
-        self.progress_bar.close()           
+        
         for k, v in result_dict.items():
-            print(k,v)
+            print(k)
+        
+        DataFile.write_file(result_dict, "result_final")
