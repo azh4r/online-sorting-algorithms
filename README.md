@@ -32,5 +32,5 @@ TRI-AD coding challenge
 
 * More test coverage needs to be added
 
-* 
+* A lot of exception handling has not been done.
 
