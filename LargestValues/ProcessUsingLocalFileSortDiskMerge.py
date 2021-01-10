@@ -1,3 +1,4 @@
+import deprecated
 from io import TextIOWrapper
 from MaxPriorityQueue import MaxPriorityQueue
 from DataFile import DataFile
@@ -8,11 +9,16 @@ from dataclasses import dataclass, field
 from typing import Any, Dict
 from tqdm import tqdm
 
+# not used now..
 @dataclass(order=True)
 class PrioritizedItem:
     priority: int
     item: Any=field(compare=False)
 
+# This is an External Sort, the best algorithm when N is very very large and K is also very very large so that both 
+# cannot fit into instance RAM.
+# For example N is 10 billion will K is also a billion.
+# But this will take a lot of local Storage space, more than the total space required to hold N and K. 
 class LocalFileSortDiskMerge:
 
     file_suffix = 0
@@ -25,8 +31,8 @@ class LocalFileSortDiskMerge:
         #   Using MaxPriorityQueue now.. which is based on a heap
         #
         #   1.take the max value from the MPQ and put the 'key,value' tuple in a result list
-        #       if file has no more lines then close the file handle
-        #          if file has more lines then get the next line (key value pair) and push it onto the MPQ.
+        #       2. if file has no more lines then close the file handle
+        #         3. if file has more lines then get the next line (key value pair) and push it onto the MPQ.
         #  
         #   Now repeat from 1, until we have the number of max values we want or the MPQ is empty 
         #   result_dict will now have the key,value tuples in order of values.
@@ -100,8 +106,8 @@ class LocalFileSortDiskMerge:
             object.progress_bar.close()
             object.sort_merge_files_from_disk(object.x_largest_values)
 
-    # deprecated, 
-    # changed into a test method for testing the core sort_merge_files_from_disk method.
+    # deprecated, changed into a test method for testing the core sort_merge_files_from_disk method.
+    @deprecated(reason='Now we are using the input file form remote url, but can use this for testing from local file')
     def test_process_using_local_file(self,file_location, x_largest_numbers, destination_dir):
         # Get count of lines in file.. then calculate the number of lines per file read 
         # OR amount of lines you want to read at a time <-- used this , ignore above
