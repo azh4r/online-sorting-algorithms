@@ -1,4 +1,3 @@
-import unittest
 import FileDownloader
 
 class TestFileDownloader:
@@ -26,5 +25,5 @@ class TestFileDownloader:
         assert result_leftover == expected_leftover
 
 
-if __name__ == '__main__':
-    unittest.main
+# if __name__ == '__main__':
+#     unittest.main
