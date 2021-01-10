@@ -56,4 +56,4 @@ class SortedMemoryMerge:
             #DataFile.write_file(object.result_dict, "result_final")
             object.progress_bar.close()
             for k, v in object.result_dict.items():
-                print(k, v)
+                print(k)
