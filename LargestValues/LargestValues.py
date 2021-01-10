@@ -6,8 +6,10 @@ import validators
 from pathlib import Path
 import ProcessSortedMemoryMerges
 import ProcessSinglePriorityQueue
-import ProcessUsingLocalFileSortMerges
 import ProcessUsingLocalFileSortDiskMerge
+#import ProcessUsingLocalFileSortMerges
+import ProcessSortedNWayInMemoryMerge
+
 
 # This module reads in the command line parameters and 
 # has the class and functions to execute the main process. 
@@ -34,9 +36,9 @@ class LargestValues:
         singlePriorityQueueMerges.process( url, chunk_size, offset_bytes, x_largest_values)
 
 
-    def processUsingLocalFileMerges(self,file_name, x_largest_values):
-        localFileSortMerges = ProcessUsingLocalFileSortMerges.LocalFileSortMerges()
-        localFileSortMerges.process( file_name, x_largest_values, self.DEFAULT_OUT_DIRECTORY)
+    def processSortedMemoryNWayMerges(url, chunk_size, offset_bytes, x_largest_values):
+        sortedMemoryNWayMerges = ProcessSortedNWayInMemoryMerge.SortedNWayMemoryMerge()
+        sortedMemoryNWayMerges.process( url, int(chunk_size), offset_bytes, int(x_largest_values))
     
     def processUsingLocalFileDiskMerges(self,file_name, x_largest_values, chunk_size, offset_bytes, url):
         localFileSortDiskMerges = ProcessUsingLocalFileSortDiskMerge.LocalFileSortDiskMerge()
@@ -87,16 +89,13 @@ def single_priority_queue(url, x, chunk_size):
     LargestValues.processSinglePriorityQueueMerges(url, int(chunk_size), offset_bytes, int(x))
 
 @cli.command()
-@click.option('--file', default=LargestValues.DEFAULT_FILE_LOCATION, type=click.STRING, help='File location for the data file')
+@click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 @click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
-def files_on_disk(file, x, chunk_size):
-    print(file)
-    if not os.path.isfile(file):
-        print("File not found, please make sure it is correct.")
-        return
+def nway_memory_merges(url, x, chunk_size):
+    print(url)
     offset_bytes = 500
-    LargestValues.processUsingLocalFileMerges(LargestValues,file, int(x))
+    LargestValues.processSortedMemoryNWayMerges(url, int(chunk_size), offset_bytes, int(x))
 
 @cli.command()
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
