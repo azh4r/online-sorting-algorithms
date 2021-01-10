@@ -3,7 +3,7 @@ import FileDownloader
 from tqdm import tqdm
 
 
-# This is the best algorithm for getting the n-largest from an extremely large unsorted file. 
+# This is the best algorithm for getting the x-largest from an extremely large unsorted file. 
 # with a small k (x_largest_values) 
 # Best algo for k << N 
 # Time Complexity N(logk) and will tend to N if k is very small.
