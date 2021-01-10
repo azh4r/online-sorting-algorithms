@@ -17,10 +17,11 @@ import ProcessSortedNWayInMemoryMerge
 
 class LargestValues:
     DEFAULT_X = 10
-    DEFAULT_FILE_LOCATION = './spacemaps_technical_challenge_orig.txt'
+    DEFAULT_FILE_LOCATION = './test_data/spacemaps_technical_challenge_orig.txt'
     REMOTE_FILE_LOCATION = 'https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt'
     CHUNK_SIZE_IN_BLOCKS = 8 # each block is 1024 byte
     DEFAULT_OUT_DIRECTORY = 'out'
+    DEFAULT_OFFSET_BYTES = 500
 
     def __init__(self):
         self.test = ''
@@ -40,7 +41,7 @@ class LargestValues:
         sortedMemoryNWayMerges = ProcessSortedNWayInMemoryMerge.SortedNWayMemoryMerge()
         sortedMemoryNWayMerges.process( url, int(chunk_size), offset_bytes, int(x_largest_values))
     
-    def processUsingLocalFileDiskMerges(self,file_name, x_largest_values, chunk_size, offset_bytes, url):
+    def processUsingLocalFileDiskMerges(self, x_largest_values, chunk_size, offset_bytes, url):
         localFileSortDiskMerges = ProcessUsingLocalFileSortDiskMerge.LocalFileSortDiskMerge()
         #localFileSortDiskMerges.test_process_using_local_file(file_name,x_largest_values, self.DEFAULT_OUT_DIRECTORY)
         localFileSortDiskMerges.process(url, chunk_size, offset_bytes, x_largest_values,self.DEFAULT_OUT_DIRECTORY)
@@ -70,7 +71,8 @@ def cli():
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 @click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
-def memory_merges(url, x, chunk_size):
+@click.option('--offset_bytes', default= LargestValues.DEFAULT_OFFSET_BYTES, type=click.INT, help = 'Bytes to skip in start of input file')
+def memory_merges(url, x, chunk_size, offset_bytes):
     if not validators.url(url):
         print("Entered url did not pass validation, please make sure it is correct.")
         return
@@ -81,34 +83,38 @@ def memory_merges(url, x, chunk_size):
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 @click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
-def single_priority_queue(url, x, chunk_size):
+@click.option('--offset_bytes', default= LargestValues.DEFAULT_OFFSET_BYTES, type=click.INT, help = 'Bytes to skip in start of input file')
+def single_priority_queue(url, x, chunk_size, offset_bytes):
     if not validators.url(url):
         print("Entered url did not pass validation, please make sure it is correct.")
         return
-    offset_bytes = 500
     LargestValues.processSinglePriorityQueueMerges(url, int(chunk_size), offset_bytes, int(x))
 
 @cli.command()
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 @click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
-def nway_memory_merges(url, x, chunk_size):
-    print(url)
-    offset_bytes = 500
+@click.option('--offset_bytes', default= LargestValues.DEFAULT_OFFSET_BYTES, type=click.INT, help = 'Bytes to skip in start of input file')
+def nway_memory_merges(url, x, chunk_size, offset_bytes):
+    if not validators.url(url):
+        print("Entered url did not pass validation, please make sure it is correct.")
+        return
     LargestValues.processSortedMemoryNWayMerges(url, int(chunk_size), offset_bytes, int(x))
 
 @cli.command()
 @click.option('--url', default=LargestValues.REMOTE_FILE_LOCATION, type=click.STRING, help='URL location for the data file')
-@click.option('--file', default=LargestValues.DEFAULT_FILE_LOCATION, type=click.STRING, help='File location for the data file')
+#@click.option('--file', default=LargestValues.DEFAULT_FILE_LOCATION, type=click.STRING, help='File location for the data file')
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 @click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
-def files_on_disk_merge(file, x, chunk_size, url):
-    print(file)
-    if not os.path.isfile(file):
-        print("File not found, please make sure it is correct.")
+@click.option('--offset_bytes', default= LargestValues.DEFAULT_OFFSET_BYTES, type=click.INT, help = 'Bytes to skip in start of input file')
+def files_on_disk_merge( x, chunk_size, url, offset_bytes):
+    if not validators.url(url):
+        print("Entered url did not pass validation, please make sure it is correct.")
         return
-    offset_bytes = 500
-    LargestValues.processUsingLocalFileDiskMerges(LargestValues,file, int(x), chunk_size, offset_bytes, url)
+    print('Using URL: ', url)
+    print('Using X-largest-values: ', x)
+    print('Using Chunk size in Blocks of 1024 bytes: ', chunk_size)
+    LargestValues.processUsingLocalFileDiskMerges(LargestValues, int(x), chunk_size, offset_bytes, url)
 
 
 if __name__ == '__main__':
