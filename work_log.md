@@ -108,8 +108,8 @@ Each record can have a 32 bit numeric value.
 
 | Case | N (Total Records) | X (largest records) | Solution                                                          | Time Complexity  | Space Complexity | Storage | RAM    | Comments |
 |------|-------------------|---------------------|-------------------------------------------------------------------|------------------|------------------|---------|--------|----------|
-| A    | 100 Billion       | 10 Billion          | Mutli-instance External Sort? Hadoop?                             |                  |                  | 2 TB    | 240 GB |          |
-| B    | 10 Billion        | 10 Billion          | External Sort, merge heaps with blocks on disk                    | O(NLogX)         |                  | 240 GB  | 240 GB |          |
+| A    | 100 Billion       | 10 Billion          | Mutli-node External Sort? Hadoop?                                 |                  |                  | 2 TB    | 240 GB |          |
+| B    | 10 Billion        | 10 Billion          | External Sort, merge chunks on disk using a heap                  | O(NLogX)         |                  | 240 GB  | 240 GB |          |
 | B    | 10 Billion        | 1 Billion           | External Sort, in-memory heapq.merge()                            | O(NlogX)         | O(X)             | 240 GB  | 24 GB  |          |
 | C    | 10 Billion        | 100                 | Priority Queue, max heap and compare with each N from file chunks | O(N)             | O(1)             | 240 GB  | 1 MB   |          |
 | D    | 1 Billion         | 1 MIllion           | Priority Queue, Merge sort or Counting sort in memory             | O(NlogX), O(N)   |                  | 24 GB   | 24 MB  |          |
