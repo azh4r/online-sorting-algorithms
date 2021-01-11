@@ -7,9 +7,13 @@ from tqdm import tqdm
 from DictHelper import dict_lines, sort_dict
 import time
 
-# This uses an iterative 2-way merge.  And we use the resultant x-largest numbers as the dict to repeatedly merge 
-# the incoming segments with using a heap. So we will still be comaring a total of N records with a heap of k size
-# so time complexity of O(Nlog(k)) and space requirments of O(chunk-size)
+# uses a 2-way iterative merge on k-segments as they are streamed from the remote server. 
+#  The incoming chunks (of size m) are first sorted (using pythong default Timsort time: O(mlogm) 
+# space: O(m)) and then heapq merged with the resultant chunk (of x-largest values).  This saves on local storage space and RAM. For each heap merge time: O(m+x) , 
+# space O(m+x), however for all the chunks k, such that m*k = n. So total would be O(mlogm) to sort 
+# each chunk and O(n*x) to merge all chunks.  Time: O(mlogm) + O(nx), this is not optimal but x maybe
+# very small compared to n and m andspace requirements is only O(m+x) and it is being merged as the 
+# array is being streamed. Also no additional disk space is required.
 class SortedMemoryMerge:
 
     progress_bar = None

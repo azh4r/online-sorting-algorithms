@@ -3,11 +3,15 @@ import FileDownloader
 from tqdm import tqdm
 
 
-# This is the best algorithm for getting the x-largest from an extremely large unsorted file. 
-# with a small k (x_largest_values) 
-# Best algo for k << N 
-# Time Complexity N(logk) and will tend to N if k is very small.
-# Space Complexity logk 
+# is the best alogirthm for a very large remote file (N is very large) and a small number of *x-largest 
+# values* would be to choose the option.  As we stream the data we keep a Max Heap of x-largest values.  
+# We compare the streaming N numbers with the top of the heap and if it is greater we insert it into the 
+# fixed size heap in logX time. So time complexity is NlogX. While space is O(X) which is the size of the 
+# heap.  
+# However when x is very small compared and N (lets say 100 compared to Billion) then after some streaming
+#  of remote data (lets say 10,000 values) there will be very few merges in the heap. So NlogX will approch 
+# N. 
+
 class SinglePriorityQueueMerges:
 
     progress_bar = None

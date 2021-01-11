@@ -10,12 +10,12 @@ from collections import ChainMap
 from operator import itemgetter
 
 # Class to sort merge n file chunks in memory in a n-way merge using heapq
-# Each file chunk is sorted in memory (using default Timsort) which has worst case Time complexity of O(MlogM)
-# M = total number of records in each chunk.    
-# and best case of O(n) and worst case space complexity is O(N) and best case O(1)
+# Each file chunk is sorted in memory (using default Timsort) which has worst case Time complexity of 
+# O(MlogM) M = total number of records in each chunk.    
+# and best case of O(N) and worst case space complexity is O(N) and best case O(1)
 #
-# Then all in-memory sorted segments are merged using a heapq which has Time complexity of O(NLogK) and space complexity of X
-# Where N is the total number of records and K is the number of segements/chunks
+# Then all in-memory sorted segments are merged using a heapq which has Time complexity of O(NLogK) 
+# and space complexity of K, Where N is the total number of records and K is the number of segements/chunks
 # Then we take the larget x values
 #
 # This algorithm will take more RAM as we are loading all Arrays into memory and doing in-memory heapq merge but it maybe faster than a 2-way interative 

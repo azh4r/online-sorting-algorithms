@@ -15,10 +15,19 @@ class PrioritizedItem:
     priority: int
     item: Any=field(compare=False)
 
-# This is an External Sort, the best algorithm when N is very very large and K is also very very large so that both 
+# This is an External Sort, the best algorithm when N is very very large and K is also  very large so 
+# that both 
 # cannot fit into instance RAM.
 # For example N is 10 billion will K is also a billion.
 # But this will take a lot of local Storage space, more than the total space required to hold N and K. 
+# This external sort uses a Max Priority Queue to merge K sorted file segements.  The Max priority queue 
+# points to the top record of each k segement.  It takes the top record and puts it in a result file, 
+# then read the next value from that segement and puts in back into Max priority queue.  It keeps repeating 
+# until we get the top X values then we can stop.  This is in addition to Timsort (time: MlogM) sorting 
+# for each file segment, where M is the number of values in each block.  And if we have K blocks then the 
+# first sorting of K segements will take time: KMlogm.  Then we have time: XlogK to get the X largest 
+# values.  In the 2nd part the space (RAM) requirement is not more then the number of segements (K). 
+#  So total time: KMlogM + XlogK.  And RAM space: K which is just a pointer to each segement. 
 class LocalFileSortDiskMerge:
 
     file_suffix = 0
