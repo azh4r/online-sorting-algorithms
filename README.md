@@ -57,7 +57,9 @@ The solution was implemented in Python.  As such the zip file can be extracted i
   
   above we specified a local URL and chunk size of 2 blocks.
 
-  * `python LargestValues/LargestValues.py --help` for help on usage, shows how to set options
+  * `python LargestValues/LargestValues.py --help` 
+  
+  for help on usage, shows how to set options
 
 ### Testing app:
 #### Without integration tests:
@@ -80,7 +82,7 @@ The solution was implemented in Python.  As such the zip file can be extracted i
   * Run default configuration, this will give you the various options, same as when you ran the extracted app. 
   
     `docker run --rm -it triadchallenge:latest` 
-  * `docker run --rm -it triadchallenge:latest python LargestValues.py --help` 
+  * `docker run --rm -it triadchallenge:latest --help` 
     
     for help on usage, shows how to set options
   * For example to run __nway-merge-sort__ algorirhm Run with default options:
@@ -131,3 +133,17 @@ The solution was implemented in Python.  As such the zip file can be extracted i
   
 * The remote file is streamed in chunks of 1024 bytes.  This is more robust then trying to read the entire file at once.  However this needs to be further improved by doing restarts on connection breaks from where the file has stopped streaming. 
 
+* For online algorithms of this challenge, this maybe a summary of algorithms that can be used given random data. 
+  
+**Different cases and algorithms**
+
+| Case | N (Total Records) | X (largest records) | Solution                                                          | Time Complexity  | Space Complexity | Storage | RAM    | Comments |
+|------|-------------------|---------------------|-------------------------------------------------------------------|------------------|------------------|---------|--------|----------|
+| A    | 100 Billion       | 10 Billion          | Mutli-node External Sort? Hadoop?                                 |                  |                  | 2 TB    | 240 GB |          |
+| B    | 10 Billion        | 10 Billion          | External Sort, merge chunks on disk using a heap                  | O(NLogX)         |                  | 240 GB  | 240 GB |          |
+| B    | 10 Billion        | 1 Billion           | External Sort, in-memory heapq.merge()                            | O(NlogX)         | O(X)             | 240 GB  | 24 GB  |          |
+| C    | 10 Billion        | 100                 | Priority Queue, max heap and compare with each N from file chunks | O(NlogX), O(N)             | O(1)             | 240 GB  | 1 MB   |          |
+| D    | 1 Billion         | 1 MIllion           | Priority Queue, Merge sort or Counting sort in memory             | O(NlogX), O(N)   |                  | 24 GB   | 24 MB  |          |
+| E    | 1 Billion         | 100                 | Priority Queue, max heap and compare with each N in memory        | O(NlogX) -> O(N) | O(1)             | 24 GB   | 1 MB   |          |
+| F    | 1 Million         | 100                 | Priority Queue, max heap and compare with each N in memory        | O(NlogX) -> O(N) |                  |         |        |          |
+| G    | 1000              | 5                   | Priority Queue, max heap and compare with each N in memory        | O(NlogX)         |                  |         |        |          |
