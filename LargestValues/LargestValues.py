@@ -41,10 +41,10 @@ class LargestValues:
         sortedMemoryNWayMerges = ProcessSortedNWayInMemoryMerge.SortedNWayMemoryMerge()
         sortedMemoryNWayMerges.process( url, int(chunk_size), offset_bytes, int(x_largest_values))
     
-    def processUsingLocalFileDiskMerges(self, x_largest_values, chunk_size, offset_bytes, url):
+    def processUsingLocalFileDiskMerges( x_largest_values, chunk_size, offset_bytes, url,dir):
         localFileSortDiskMerges = ProcessUsingLocalFileSortDiskMerge.LocalFileSortDiskMerge()
         #localFileSortDiskMerges.test_process_using_local_file(file_name,x_largest_values, self.DEFAULT_OUT_DIRECTORY)
-        localFileSortDiskMerges.process(url, chunk_size, offset_bytes, x_largest_values,self.DEFAULT_OUT_DIRECTORY)
+        localFileSortDiskMerges.process(url, chunk_size, offset_bytes, x_largest_values,dir)
 
 # Read in the file name from command line
 # parameters must be X, location of file.   (these 2 are required)
@@ -107,14 +107,15 @@ def nway_memory_merges(url, x, chunk_size, offset_bytes):
 @click.option('--x', default=LargestValues.DEFAULT_X, type=click.INT, help='Number of Largest Values to get from data file')
 @click.option('--chunk_size', default=LargestValues.CHUNK_SIZE_IN_BLOCKS, type=click.INT, help= 'Size of chunk to retrieve from remote file and process at a time in blocks of 1024 bytes.')
 @click.option('--offset_bytes', default= LargestValues.DEFAULT_OFFSET_BYTES, type=click.INT, help = 'Bytes to skip in start of input file')
-def files_on_disk_merge( x, chunk_size, url, offset_bytes):
+@click.option('--dir', default=LargestValues.DEFAULT_OUT_DIRECTORY, type=click.STRING, help= 'Where to save the file segments.')
+def files_on_disk_merge( x, chunk_size, url, offset_bytes, dir):
     if not validators.url(url):
         print("Entered url did not pass validation, please make sure it is correct.")
         return
     print('Using URL: ', url)
     print('Using X-largest-values: ', x)
     print('Using Chunk size in Blocks of 1024 bytes: ', chunk_size)
-    LargestValues.processUsingLocalFileDiskMerges(LargestValues, int(x), chunk_size, offset_bytes, url)
+    LargestValues.processUsingLocalFileDiskMerges( int(x), chunk_size, offset_bytes, url,dir)
 
 
 if __name__ == '__main__':
