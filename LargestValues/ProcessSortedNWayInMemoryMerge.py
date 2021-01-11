@@ -10,16 +10,16 @@ from collections import ChainMap
 from operator import itemgetter
 
 # Class to sort merge n file chunks in memory in a n-way merge using heapq
-# Each file chunk is sorted in memory (using default Timsort) which has worst case Time complexity of O(NlogN)
-# N = total number of records in each chunk.    
+# Each file chunk is sorted in memory (using default Timsort) which has worst case Time complexity of O(MlogM)
+# M = total number of records in each chunk.    
 # and best case of O(n) and worst case space complexity is O(N) and best case O(1)
 #
 # Then all in-memory sorted segments are merged using a heapq which has Time complexity of O(NLogK) and space complexity of X
 # Where N is the total number of records and K is the number of segements/chunks
 # Then we take the larget x values
 #
-# This algorithm will take more RAM as we are doing in-memory sort and heapq merge but it maybe faster than a 2-way interative 
-# merge depending on the size of x-largest-numbers (k).  If k is as large as a segement size then this will be faster.  
+# This algorithm will take more RAM as we are loading all Arrays into memory and doing in-memory heapq merge but it maybe faster than a 2-way interative 
+# iterative merge.  
 class SortedNWayMemoryMerge:
 
     progress_bar = None
@@ -54,25 +54,7 @@ class SortedNWayMemoryMerge:
             
     
     def merge_sort_all_dicts(self,sorted_dict_chunks_list):
-        # merged_map = ChainMap(*sorted_dict_chunks_list)       
-        # merged_dict = dict(merged_map)
-        # for c in sorted_dict_chunks_list:
-        #     c.items()
-        # for c in sorted_dict_chunks_list:
-        #     print(c)
-        # print('\n')
-        # return
-        # dicts = [c for c in sorted_dict_chunks_list]
-        # dicts2 = {}
-        # for c in dicts:
-        #     for k,v in c.items():
-        #         dicts2[k]=v
-        #     print('ending i')
-        # print('ending c')
-        # for i in dicts2:
-        #     print(i)
-        # print('helloooooooooooooooooo boy')
-        # return
+
         result_generator = heapq.merge(*[x.items() for x in sorted_dict_chunks_list] , key = lambda item: item[1],reverse=True)
         # Saving only the first X items in merge sorted dict
         sliced_generator = itertools.islice(result_generator, self.x_largest_values)
