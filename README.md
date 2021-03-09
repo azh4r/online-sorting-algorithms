@@ -75,28 +75,28 @@ The solution was implemented in Python.  As such the zip file can be extracted i
 ## 2. Run app from a Dockerized container:
   * Make sure you have docker installed. To check `docker --version`
   * From the root directory of the app, run the following:
-    * `docker build --rm -f Dockerfile -t triadchallenge:latest .`
+    * `docker build --rm -f Dockerfile -t onlinealgorithms:latest .`
 
     This should build the docker image, that you can now run:
 * Run the app inside the docker container 
   * Run default configuration, this will give you the various options, same as when you ran the extracted app. 
   
-    `docker run --rm -it triadchallenge:latest` 
-  * `docker run --rm -it triadchallenge:latest --help` 
+    `docker run --rm -it onlinealgorithms:latest` 
+  * `docker run --rm -it onlinealgorithms:latest --help` 
     
     for help on usage, shows how to set options
   * For example to run __nway-merge-sort__ algorirhm Run with default options:
     
-    `docker run --rm -it triadchallenge:latest nway-memory-merges` 
+    `docker run --rm -it onlinealgorithms:latest nway-memory-merges` 
 
   * Or you can specify different options, for example if you want to run __single-priority-queue__ algorithm with a specific url and x = 5 with chunk_size of 8 blocks:
   
-     `docker run --rm -it triadchallenge:latest single-priority-queue --url https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt --x 5 --chunk_size 8` 
+     `docker run --rm -it onlinealgorithms:latest single-priority-queue --url https://amp-spacemaps-technical-challenge.s3-ap-northeast-1.amazonaws.com/spacemaps_technical_challenge.txt --x 5 --chunk_size 8` 
 
 ### Testing App inside Docker container
 #### Without integration tests
 * Run the pytests inside docker container
-  * `docker run --rm -it --entrypoint "pytest" triadchallenge:latest --without-integration`
+  * `docker run --rm -it --entrypoint "pytest" onlinealgorithms:latest --without-integration`
 
 **Note** Cannot run intergration tests inside the container, as it does not include a webserver. 
 
