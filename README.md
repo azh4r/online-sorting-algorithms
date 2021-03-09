@@ -1,4 +1,4 @@
-# README: TRI-AD Coding Challenge
+# README: Online Sorting Algorithms Coding
 
 The solution was implemented in Python.  As such the zip file can be extracted in a local directory and the app can be run from the command line.
 
