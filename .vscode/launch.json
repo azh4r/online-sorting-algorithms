@@ -1,0 +1,56 @@
+{
+    "configurations": [
+        {
+            "name": "Python: memory-merges",
+            "type": "python",
+            "request": "launch",
+            "program": "LargestValues/LargestValues.py",
+            "console": "integratedTerminal",
+            "args": [
+                "memory-merges", "--url", "http://localhost:8000/spacemaps_technical_challenge_orig.txt"
+            ]
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "test.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "LargestValues.py",
+            "console": "integratedTerminal",
+            "args": [
+                "files-on-disk-merge"
+            ]
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "LargestValues.py",
+            "args": [
+                "files-on-disk"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Docker: Python - General",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "general"
+            }
+        }
+    ]
+}

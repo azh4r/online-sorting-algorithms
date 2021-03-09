@@ -1,0 +1,17 @@
+{
+    "python.pythonPath": "/home/azhar/projects/triad-challenge/triad-challenge/env/bin/python3.9",
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.analysis.extraPaths": ["${workspaceFolder}/LargestValues"],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}/LargestValues",
+    },
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "terminal.integrated.allowChords": false,    // Allow ctrl-k to kill line
+    "python.languageServer": "Pylance"
+
+}
