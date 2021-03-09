@@ -148,6 +148,5 @@ The solution was implemented in Python.  As such the zip file can be extracted i
 | F    | 1 Million         | 100                 | Priority Queue, max heap and compare with each N in memory        | O(NlogX) -> O(N) |                  |         |        |          |
 | G    | 1000              | 5                   | Priority Queue, max heap and compare with each N in memory        | O(NlogX)         |                  |         |        |          |
 
-* I have checked in everything in a ***PRIVATE*** repository.  https://github.com/azh4r/triad-challenge 
-  repository is private, but if you need to review how I checked in code, please request access. 
+
   
